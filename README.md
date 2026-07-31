@@ -1,5 +1,5 @@
 # Hins-flow
-Hins-flow 是一个面向 Codex 的 npm skills 套件：通过一个全局 CLI 安装 Universal Flow 和稳定版 Matt Pocock engineering skills，为跨语言、跨平台的软件项目提供可追踪、带门禁的开发流程。
+Hins-flow 是一个通过 GitHub 分发的 Codex skills 套件：使用全局 CLI 安装 Universal Flow 和稳定版 Matt Pocock engineering skills，为跨语言、跨平台的软件项目提供可追踪、带门禁的开发流程。
 
 它不是 Codex plugin，不需要 plugin manifest、marketplace 或 `codex plugin` 命令。安装完成后，Codex 直接从用户全局 skills 目录发现 `$hins-flow` 和 Matt skills。
 
@@ -15,12 +15,6 @@ Hins-flow 是一个面向 Codex 的 npm skills 套件：通过一个全局 CLI �
 
 ```powershell
 npm install -g https://github.com/Loe1210/Hins-flow.git
-```
-
-### 从 npm 安装
-
-```powershell
-npm install -g @loe1210/hins-flow
 ```
 
 检查 CLI：
@@ -274,17 +268,7 @@ Universal Flow 会保留并使用 `verification-contract.md`、跨平台限制�
 
 不会安装 `skills/in-progress`、Vercel 或其他来源的 skills。
 
-## 8. 升级
-
-从 npm 升级：
-
-```powershell
-npm update -g @loe1210/hins-flow
-hins-flow install --force
-hins-flow doctor
-```
-
-从 GitHub 升级：
+## 8. 从 GitHub 升级
 
 ```powershell
 npm install -g https://github.com/Loe1210/Hins-flow.git
