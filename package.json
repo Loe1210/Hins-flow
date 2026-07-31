@@ -12,9 +12,6 @@
   "engines": {
     "node": ">=18"
   },
-  "scripts": {
-    "prepare": "node bin/hins-flow.js install"
-  },
   "bin": {
     "hins-flow": "bin/hins-flow.js"
   },

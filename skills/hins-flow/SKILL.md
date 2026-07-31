@@ -20,9 +20,8 @@ flow.
 ## Before acting
 
 1. Check that the bundled Matt skills and this skill are present in the user's
-   global skills directory. If the GitHub npm package's postinstall has not
-   completed, run `hins-flow install` without `--force`, then continue with the
-   preflight.
+   global skills directory. If they are missing, run `hins-flow install`
+   without `--force`, then continue with the preflight.
 2. Read [workflow.md](references/workflow.md),
    [profile-selection.md](references/profile-selection.md),
    [surface-profiles.md](references/surface-profiles.md), and
