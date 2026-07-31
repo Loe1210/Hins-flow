@@ -1,6 +1,6 @@
 # Codex Universal Flow
 
-`codex-flow` 是一个可通过 npm 全局安装的 Codex skills 套件。它把 Universal Flow 和稳定版 Matt Pocock Skills 放在同一个 npm 包中，并提供控制台命令将 skills 安装到 Codex 的全局 skills 目录。
+`@loe1210/codex-flow` 是一个可通过 npm 全局安装的 Codex skills 套件。它把 Universal Flow 和稳定版 Matt Pocock Skills 放在同一个 npm 包中，并提供控制台命令将 skills 安装到 Codex 的全局 skills 目录。
 
 这不是 Codex plugin，不需要 marketplace、plugin manifest 或 Codex plugin 命令。
 
@@ -16,7 +16,7 @@ codex-flow install
 发布到 npm 后，也可以使用：
 
 ```powershell
-npm install -g codex-flow
+npm install -g @loe1210/codex-flow
 codex-flow install
 ```
 
@@ -96,7 +96,7 @@ Universal Flow 使用 `flowctl.py` 管理状态和门禁，使用 `project-probe
 ## 升级
 
 ```powershell
-npm update -g codex-flow
+npm update -g @loe1210/codex-flow
 codex-flow install --force
 ```
 
@@ -114,4 +114,3 @@ codex-flow install --force
 ## 许可与归属
 
 本项目以 MIT 许可证发布。随包分发的 Matt Pocock Skills 来源为公开仓库 [mattpocock/skills](https://github.com/mattpocock/skills)，原作者和许可归属保持不变。本项目作者为 Loe1210。
-
