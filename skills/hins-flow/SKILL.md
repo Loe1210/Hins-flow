@@ -1,6 +1,6 @@
 ---
 name: hins-flow
-description: Run a universal gated development workflow for any language, package manager, application surface, and target platform. Use when the user invokes $hins-flow with plan, review-plan, dev, review-dev, or finish for frontend, backend, mobile, desktop, CLI, library, data, or infrastructure work.
+description: Run a universal gated development workflow for any language, package manager, application surface, and target platform. Use when the user invokes $hins-flow or /hins-flow with plan, review-plan, dev, review-dev, or finish for frontend, backend, mobile, desktop, CLI, library, data, or infrastructure work.
 ---
 
 # Flow Universal
@@ -12,22 +12,32 @@ probe -> classify -> Matt discovery/spec -> plan review -> Gate A
       -> isolated implementation/TDD -> two-axis review -> Gate B -> finish
 ```
 
+When the user enters `/hins-flow` (or `$hins-flow` in Codex surfaces that use
+dollar-prefixed skill invocation), run the entry preflight automatically. Do
+not require the user to memorize a separate setup command before the first
+flow.
+
 ## Before acting
 
-1. Read [workflow.md](references/workflow.md),
+1. Check that the bundled Matt skills and this skill are present in the user's
+   global skills directory. If the GitHub npm package's postinstall has not
+   completed, run `hins-flow install` without `--force`, then continue with the
+   preflight.
+2. Read [workflow.md](references/workflow.md),
    [profile-selection.md](references/profile-selection.md),
    [surface-profiles.md](references/surface-profiles.md), and
    [verification-contract.md](references/verification-contract.md).
-2. After probing, read every ecosystem reference routed by
+3. After probing, read every ecosystem reference routed by
    `profile-selection.md` for affected packages. In a polyglot repository, load
    more than one; for an unknown language, load the generic fallback.
-3. For review stages, also read [review-prompts.md](references/review-prompts.md).
-4. Read repository instructions, `CONTEXT.md`, ADRs, CI files, manifests,
+4. For review stages, also read [review-prompts.md](references/review-prompts.md).
+5. Read repository instructions, `CONTEXT.md`, ADRs, CI files, manifests,
    lockfiles, and existing test scripts.
-5. Before the first non-Light flow, ensure Matt setup files exist. If
-   `docs/agents/issue-tracker.md` or `docs/agents/domain.md` is missing, run
-   `$setup-matt-pocock-skills` and stop for its user choices.
-6. Run the read-only project probe before proposing verification:
+6. Before the first non-Light flow, check that Matt setup files exist. If
+   `docs/agents/issue-tracker.md` or `docs/agents/domain.md` is missing, invoke
+   `$setup-matt-pocock-skills` automatically and pause only for its required
+   user choices; resume the flow after setup is complete.
+7. Run the read-only project probe before proposing verification:
 
    ```text
    python <skill-dir>/scripts/project-probe.py

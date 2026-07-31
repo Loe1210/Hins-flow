@@ -9,27 +9,24 @@ Hins-flow 是一个通过 GitHub 分发的 Codex skills 套件：使用全局 CL
 - 已安装 Codex，并能创建新的 task/thread
 - 项目使用根目录 `AGENTS.md` 记录仓库约束；不需要 `CLAUDE.md`
 
-## 1. 安装 CLI
-
-### 从 GitHub 安装
+## 1. 从 GitHub 安装
 
 ```powershell
 npm install -g https://github.com/Loe1210/Hins-flow.git
 ```
 
-检查 CLI：
+安装脚本会自动执行 skills 安装，把 `hins-flow` 和随包携带的 Matt skills 复制到 Codex 的全局目录。安装完成后，新开一个终端，再检查 CLI：
 
 ```powershell
 hins-flow --version
 hins-flow --help
 ```
 
-## 2. 安装 Codex skills
+## 2. 自动检查和安装结果
 
-`npm install -g` 只安装控制台 CLI；必须再运行 `hins-flow install`，才能把 skills 复制到 Codex 的全局目录：
+正常情况下不需要额外运行安装命令。可以用 `doctor` 检查：
 
 ```powershell
-hins-flow install
 hins-flow doctor
 ```
 
@@ -40,7 +37,7 @@ Windows: %USERPROFILE%\.agents\skills
 macOS/Linux: ~/.agents/skills
 ```
 
-如果要更新已经存在的 skills：
+如果升级后需要强制刷新已经存在的 skills：
 
 ```powershell
 hins-flow install --force
@@ -65,20 +62,20 @@ hins-flow doctor --target C:\temp\hins-flow-skills
 
 ## 3. 首次项目配置
 
-进入要开发的项目根目录，确认存在 `AGENTS.md`。第一次运行 Standard、Large 或 High-risk flow 时，如果以下文件不存在：
+进入要开发的项目根目录，确认存在 `AGENTS.md`。直接在 Codex 中进入流程：
+
+```text
+/hins-flow
+```
+
+`/hins-flow` 会自动检查 skills、项目 profile、Matt setup 文档和现有门禁状态。第一次运行 Standard、Large 或 High-risk flow 时，如果以下文件不存在，它会自动进入 setup 流程并只在必要处请求你的选择：
 
 ```text
 docs/agents/issue-tracker.md
 docs/agents/domain.md
 ```
 
-先在 Codex 中运行：
-
-```text
-$setup-matt-pocock-skills
-```
-
-按提示选择 issue tracker、triage labels 和 domain docs 布局。这个配置是每个项目一次，不是每次 `$hins-flow` 都重复配置。
+按提示选择 issue tracker、triage labels 和 domain docs 布局。这个配置是每个项目一次，不是每次 `/hins-flow` 都重复配置。
 
 建议在项目的 `AGENTS.md` 中写清楚：
 
@@ -88,9 +85,9 @@ $setup-matt-pocock-skills
 - 数据库、迁移、生成文件和部署约束
 - 哪些操作必须先获得用户确认
 
-## 4. `$hins-flow` 全流程
+## 4. `/hins-flow` 全流程
 
-标准调用顺序：
+标准调用顺序（Codex 也可能显示为 `$hins-flow`）：
 
 ```text
 $hins-flow plan <slug> "<title>"
