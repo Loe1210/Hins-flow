@@ -4,10 +4,10 @@
   "description": "Hins-flow universal gated development workflow and bundled Matt Pocock skills for Codex.",
   "author": "Loe1210",
   "license": "MIT",
-  "homepage": "https://github.com/Loe1210/codex-flow",
+  "homepage": "https://github.com/Loe1210/Hins-flow",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Loe1210/codex-flow.git"
+    "url": "https://github.com/Loe1210/Hins-flow.git"
   },
   "engines": {
     "node": ">=18"

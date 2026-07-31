@@ -9,7 +9,7 @@
 从 GitHub 安装最新版：
 
 ```powershell
-npm install -g https://github.com/Loe1210/codex-flow.git
+npm install -g https://github.com/Loe1210/Hins-flow.git
 hins-flow install
 ```
 
@@ -103,7 +103,7 @@ hins-flow install --force
 从 GitHub 安装的副本可重复执行：
 
 ```powershell
-npm install -g https://github.com/Loe1210/codex-flow.git
+npm install -g https://github.com/Loe1210/Hins-flow.git
 hins-flow install --force
 ```
 
