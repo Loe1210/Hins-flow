@@ -1,10 +1,55 @@
 # Codex Universal Flow
 
-`codex-flow` 是一个可公开发布的 Codex plugin，把 Universal Flow 与 Matt Pocock 的工程 skills 打包在一起，为不同语言、平台和产品形态提供统一的、带门禁的开发流程。
+`codex-flow` 是一个可通过 npm 全局安装的 Codex skills 套件。它把 Universal Flow 和稳定版 Matt Pocock Skills 放在同一个 npm 包中，并提供控制台命令将 skills 安装到 Codex 的全局 skills 目录。
 
-## 解决的问题
+这不是 Codex plugin，不需要 marketplace、plugin manifest 或 Codex plugin 命令。
 
-`$flow` 先探测仓库，再选择语言与产品 profile，要求完成 Matt discovery/spec 与计划评审，之后才允许隔离实现、TDD、双轴 code review 和收尾。这样可以减少在错误技术假设、未确认规格或未完成验证时直接改代码的风险。
+## 安装
+
+从 GitHub 安装最新版：
+
+```powershell
+npm install -g https://github.com/Loe1210/codex-flow.git
+codex-flow install
+```
+
+发布到 npm 后，也可以使用：
+
+```powershell
+npm install -g codex-flow
+codex-flow install
+```
+
+如果已有旧版本 skills，使用 `--force` 更新对应文件：
+
+```powershell
+codex-flow install --force
+```
+
+默认安装目录为：
+
+```text
+Windows: %USERPROFILE%\.agents\skills
+macOS/Linux: ~/.agents/skills
+```
+
+也可以指定目录，适合测试或 CI：
+
+```powershell
+codex-flow install --target C:\path\to\skills
+```
+
+## 控制台命令
+
+```text
+codex-flow install [--target <dir>] [--force]  安装或更新全部 skills
+codex-flow list                                  列出 npm 包内的 skills
+codex-flow path                                  显示默认全局安装目录
+codex-flow doctor [--target <dir>]               检查安装完整性
+codex-flow --version                             显示版本
+```
+
+安装完成后，新建一个 Codex task/thread，让 Codex 载入新增或更新的 skills。Codex 使用项目根目录的 `AGENTS.md`，不需要 `CLAUDE.md`。
 
 ## `$flow` 完整调用方式
 
@@ -16,7 +61,7 @@ $flow review-dev 0001
 $flow finish 0001
 ```
 
-核心强制顺序为：
+强制流程为：
 
 ```text
 $setup-matt-pocock-skills
@@ -30,48 +75,37 @@ $setup-matt-pocock-skills
 → finish
 ```
 
-`flowctl.py` 负责状态、证据和门禁；`project-probe.py` 只读探测项目，不替代人工确认。Universal Flow 保留 `verification-contract.md`、`flow_verification`、Matt gate 状态检查、跨平台环境限制检查，以及 worktree、Gate A、Gate B、合并和清理规则。
+Universal Flow 使用 `flowctl.py` 管理状态和门禁，使用 `project-probe.py` 只读探测仓库。它保留 `verification-contract.md`、`flow_verification`、Matt gate 状态检查、跨平台环境限制检查，以及 worktree、Gate A、Gate B、合并和清理规则。
 
 ## 支持范围
 
-语言和生态包括 Go、Node/TypeScript、Python、Rust、JVM、Android、.NET、Swift、C/C++、PHP、Ruby、Elixir、Dart/Flutter，以及未知项目的 generic fallback。产品 surface 包括 Web、后端、移动端、桌面端、CLI、库、SDK、插件、嵌入式、游戏、数据、ML 和基础设施。
+语言和生态：Go、Node/TypeScript、Python、Rust、JVM、Android、.NET、Swift、C/C++、PHP、Ruby、Elixir、Dart/Flutter，以及 generic fallback。
 
-本插件同时安装稳定版 Matt Pocock Skills（来源锁定为 `mattpocock/skills`）：
+产品 surface：Web、后端、移动端、桌面端、CLI、库、SDK、插件、嵌入式、游戏、数据、ML、基础设施。
+
+随包安装的稳定版 Matt Pocock Skills（均来自 `mattpocock/skills`）：
 
 `ask-matt`、`codebase-design`、`code-review`、`diagnosing-bugs`、`domain-modeling`、`grilling`、`grill-me`、`grill-with-docs`、`handoff`、`implement`、`improve-codebase-architecture`、`prototype`、`research`、`resolving-merge-conflicts`、`setup-matt-pocock-skills`、`tdd`、`teach`、`to-spec`、`to-tickets`、`triage`、`wayfinder`、`writing-great-skills`。
 
-没有打包 `skills/in-progress` 内容、Vercel 或其他来源的 skills，也没有打包 `flow-go` 或 `flow-ts`。
+不会安装 `skills/in-progress`、Vercel 或其他来源的 skills，也不会安装已删除的旧 Flow 变体。
 
-## 首次配置
+## 首次使用配置 `AGENTS.md`
 
-第一次在项目中运行非 Light flow 时，如果缺少 `docs/agents/issue-tracker.md` 或 `docs/agents/domain.md`，执行 `$setup-matt-pocock-skills`，按提示配置 issue tracker 和领域文档。Codex 使用项目根目录的 `AGENTS.md`；不需要 `CLAUDE.md`。建议在 `AGENTS.md` 中记录仓库命令、边界、测试入口和部署约束。
-
-## 从 GitHub 安装
-
-在 Codex 中把 GitHub 仓库添加为 marketplace，再安装插件：
-
-```powershell
-codex plugin marketplace add https://github.com/Loe1210/codex-flow
-codex plugin add codex-flow@codex-flow
-```
-
-也可以使用短地址：
-
-```powershell
-codex plugin marketplace add Loe1210/codex-flow
-codex plugin add codex-flow@codex-flow
-```
-
-安装后新建一个 Codex task/thread，让 Codex 载入新 skills。
+第一次在项目中运行非 Light flow 时，如果缺少 `docs/agents/issue-tracker.md` 或 `docs/agents/domain.md`，运行 `$setup-matt-pocock-skills`，按提示配置 issue tracker、领域文档和 triage labels。建议在项目根目录 `AGENTS.md` 中记录仓库命令、测试入口、平台限制和部署约束。
 
 ## 升级
 
 ```powershell
-codex plugin marketplace upgrade codex-flow
-codex plugin add codex-flow@codex-flow
+npm update -g codex-flow
+codex-flow install --force
 ```
 
-如果本地开发副本已通过 personal marketplace 安装，按 plugin-creator 的更新流程运行 `update_plugin_cachebuster.py`，再重新安装并开启新 task/thread。
+从 GitHub 安装的副本可重复执行：
+
+```powershell
+npm install -g https://github.com/Loe1210/codex-flow.git
+codex-flow install --force
+```
 
 ## 安全边界
 
@@ -79,5 +113,5 @@ codex plugin add codex-flow@codex-flow
 
 ## 许可与归属
 
-本插件以 MIT 许可证发布。随插件分发的 Matt Pocock Skills 来源为公开仓库 [mattpocock/skills](https://github.com/mattpocock/skills)，其原作者和许可归属保持不变；本仓库只打包锁文件中来源为 `mattpocock/skills` 的稳定版本。
+本项目以 MIT 许可证发布。随包分发的 Matt Pocock Skills 来源为公开仓库 [mattpocock/skills](https://github.com/mattpocock/skills)，原作者和许可归属保持不变。本项目作者为 Loe1210。
 
