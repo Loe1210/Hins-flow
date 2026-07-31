@@ -1,6 +1,6 @@
 ---
-name: flow
-description: Run a universal gated development workflow for any language, package manager, application surface, and target platform. Use when the user invokes $flow with plan, review-plan, dev, review-dev, or finish for frontend, backend, mobile, desktop, CLI, library, data, or infrastructure work.
+name: hins-flow
+description: Run a universal gated development workflow for any language, package manager, application surface, and target platform. Use when the user invokes $hins-flow with plan, review-plan, dev, review-dev, or finish for frontend, backend, mobile, desktop, CLI, library, data, or infrastructure work.
 ---
 
 # Flow Universal

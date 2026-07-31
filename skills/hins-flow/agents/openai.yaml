@@ -1,4 +1,4 @@
 interface:
   display_name: "Flow Universal"
   short_description: "Universal gated development for any stack or platform"
-  default_prompt: "Use $flow plan to run the universal gated development workflow for this repository."
+  default_prompt: "Use $hins-flow plan to run the universal gated development workflow for this repository."

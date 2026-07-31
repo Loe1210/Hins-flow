@@ -1,6 +1,6 @@
-# Codex Universal Flow
+# Hins-flow
 
-`@loe1210/codex-flow` 是一个可通过 npm 全局安装的 Codex skills 套件。它把 Universal Flow 和稳定版 Matt Pocock Skills 放在同一个 npm 包中，并提供控制台命令将 skills 安装到 Codex 的全局 skills 目录。
+`@loe1210/hins-flow` 是一个可通过 npm 全局安装的 Codex skills 套件。它把 Hins-flow 和稳定版 Matt Pocock Skills 放在同一个 npm 包中，并提供控制台命令将 skills 安装到 Codex 的全局 skills 目录。
 
 这不是 Codex plugin，不需要 marketplace、plugin manifest 或 Codex plugin 命令。
 
@@ -10,20 +10,20 @@
 
 ```powershell
 npm install -g https://github.com/Loe1210/codex-flow.git
-codex-flow install
+hins-flow install
 ```
 
 发布到 npm 后，也可以使用：
 
 ```powershell
-npm install -g @loe1210/codex-flow
-codex-flow install
+npm install -g @loe1210/hins-flow
+hins-flow install
 ```
 
 如果已有旧版本 skills，使用 `--force` 更新对应文件：
 
 ```powershell
-codex-flow install --force
+hins-flow install --force
 ```
 
 默认安装目录为：
@@ -36,29 +36,29 @@ macOS/Linux: ~/.agents/skills
 也可以指定目录，适合测试或 CI：
 
 ```powershell
-codex-flow install --target C:\path\to\skills
+hins-flow install --target C:\path\to\skills
 ```
 
 ## 控制台命令
 
 ```text
-codex-flow install [--target <dir>] [--force]  安装或更新全部 skills
-codex-flow list                                  列出 npm 包内的 skills
-codex-flow path                                  显示默认全局安装目录
-codex-flow doctor [--target <dir>]               检查安装完整性
-codex-flow --version                             显示版本
+hins-flow install [--target <dir>] [--force]  安装或更新全部 skills
+hins-flow list                                  列出 npm 包内的 skills
+hins-flow path                                  显示默认全局安装目录
+hins-flow doctor [--target <dir>]               检查安装完整性
+hins-flow --version                             显示版本
 ```
 
 安装完成后，新建一个 Codex task/thread，让 Codex 载入新增或更新的 skills。Codex 使用项目根目录的 `AGENTS.md`，不需要 `CLAUDE.md`。
 
-## `$flow` 完整调用方式
+## `$hins-flow` 完整调用方式
 
 ```text
-$flow plan upload-hardening "强化分片上传"
-$flow review-plan 0001
-$flow dev 0001
-$flow review-dev 0001
-$flow finish 0001
+$hins-flow plan upload-hardening "强化分片上传"
+$hins-flow review-plan 0001
+$hins-flow dev 0001
+$hins-flow review-dev 0001
+$hins-flow finish 0001
 ```
 
 强制流程为：
@@ -96,20 +96,20 @@ Universal Flow 使用 `flowctl.py` 管理状态和门禁，使用 `project-probe
 ## 升级
 
 ```powershell
-npm update -g @loe1210/codex-flow
-codex-flow install --force
+npm update -g @loe1210/hins-flow
+hins-flow install --force
 ```
 
 从 GitHub 安装的副本可重复执行：
 
 ```powershell
 npm install -g https://github.com/Loe1210/codex-flow.git
-codex-flow install --force
+hins-flow install --force
 ```
 
 ## 安全边界
 
-`$flow` 不会自动部署、push、合并或删除用户数据。`finish` 只会在用户明确选择后执行合并、PR、保留或丢弃等动作；删除分支和 worktree 也会单独询问。
+`$hins-flow` 不会自动部署、push、合并或删除用户数据。`finish` 只会在用户明确选择后执行合并、PR、保留或丢弃等动作；删除分支和 worktree 也会单独询问。
 
 ## 许可与归属
 

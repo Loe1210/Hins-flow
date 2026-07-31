@@ -8,17 +8,17 @@ const packageRoot = path.resolve(__dirname, "..");
 const bundledSkillsRoot = path.join(packageRoot, "skills");
 
 function printHelp() {
-  console.log(`Codex Universal Flow
+  console.log(`Hins-flow
 
 Install the bundled Universal Flow and Matt Pocock skills for Codex.
 
 Usage:
-  codex-flow install [--target <dir>] [--force]
-  codex-flow list
-  codex-flow path
-  codex-flow doctor [--target <dir>]
-  codex-flow --help
-  codex-flow --version
+  hins-flow install [--target <dir>] [--force]
+  hins-flow list
+  hins-flow path
+  hins-flow doctor [--target <dir>]
+  hins-flow --help
+  hins-flow --version
 
 Commands:
   install  Copy bundled skills into the user's global Codex skills directory.
@@ -138,17 +138,17 @@ function doctor(options) {
     if (metadata.name !== name) errors.push(`${name}: frontmatter name is ${metadata.name || "missing"}`);
     if (!metadata.description) errors.push(`${name}: frontmatter description is missing`);
   }
-  const flowRoot = path.join(options.target, "flow");
+  const flowRoot = path.join(options.target, "hins-flow");
   for (const relative of ["scripts/flowctl.py", "scripts/project-probe.py", "references/verification-contract.md"]) {
-    if (!fs.existsSync(path.join(flowRoot, relative))) errors.push(`flow: missing ${relative}`);
+    if (!fs.existsSync(path.join(flowRoot, relative))) errors.push(`hins-flow: missing ${relative}`);
   }
   if (errors.length > 0) {
-    console.error("Codex Flow doctor found problems:");
+    console.error("Hins-flow doctor found problems:");
     for (const error of errors) console.error(`- ${error}`);
     process.exitCode = 1;
     return;
   }
-  console.log(`Codex Flow installation is healthy: ${names.length} skills in ${options.target}`);
+  console.log(`Hins-flow installation is healthy: ${names.length} skills in ${options.target}`);
 }
 
 function main() {
@@ -185,7 +185,7 @@ function main() {
 try {
   main();
 } catch (error) {
-  console.error(`codex-flow: ${error.message}`);
-  console.error("Run `codex-flow --help` for usage.");
+  console.error(`hins-flow: ${error.message}`);
+  console.error("Run `hins-flow --help` for usage.");
   process.exitCode = 1;
 }

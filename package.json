@@ -1,7 +1,7 @@
 {
-  "name": "@loe1210/codex-flow",
+  "name": "@loe1210/hins-flow",
   "version": "1.0.0",
-  "description": "Universal gated development workflow and bundled Matt Pocock skills for Codex.",
+  "description": "Hins-flow universal gated development workflow and bundled Matt Pocock skills for Codex.",
   "author": "Loe1210",
   "license": "MIT",
   "homepage": "https://github.com/Loe1210/codex-flow",
@@ -13,7 +13,7 @@
     "node": ">=18"
   },
   "bin": {
-    "codex-flow": "bin/codex-flow.js"
+    "hins-flow": "bin/hins-flow.js"
   },
   "files": [
     "bin/",
