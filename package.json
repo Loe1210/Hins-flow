@@ -13,7 +13,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "postinstall": "node bin/hins-flow.js install"
+    "prepare": "node bin/hins-flow.js install"
   },
   "bin": {
     "hins-flow": "bin/hins-flow.js"

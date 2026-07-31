@@ -15,7 +15,7 @@ Hins-flow 是一个通过 GitHub 分发的 Codex skills 套件：使用全局 CL
 npm install -g https://github.com/Loe1210/Hins-flow.git
 ```
 
-安装脚本会自动执行 skills 安装，把 `hins-flow` 和随包携带的 Matt skills 复制到 Codex 的全局目录。安装完成后，新开一个终端，再检查 CLI：
+GitHub 依赖的 `prepare` 阶段会自动执行 skills 安装，把 `hins-flow` 和随包携带的 Matt skills 复制到 Codex 的全局目录。安装完成后，新开一个终端，再检查 CLI：
 
 ```powershell
 hins-flow --version
