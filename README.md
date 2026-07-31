@@ -1,114 +1,84 @@
 # Hins-flow
-Hins-flow 是一个通过 GitHub 分发的 Codex skills 套件：使用全局 CLI 安装 Universal Flow 和稳定版 Matt Pocock engineering skills，为跨语言、跨平台的软件项目提供可追踪、带门禁的开发流程。
 
-它不是 Codex plugin，不需要 plugin manifest、marketplace 或 `codex plugin` 命令。安装完成后，Codex 直接从用户全局 skills 目录发现 `$hins-flow` 和 Matt skills。
+Hins-flow 是一套面向 Codex 的稳定开发流程。你只需要从一个模糊需求开始，它会自动了解项目、补全需求、生成规格、实施代码、运行测试并完成双轴审查，让结果尽量符合你的预期，并留下可验证的证据。
 
-## 0. 前置条件
+需求写得越具体，结果通常越贴近预期；但你不需要先整理成专业的 PRD，也不需要记住 `plan`、`dev` 或 `review` 等阶段命令。
 
-- Node.js 18 或更高版本
-- 已安装 Codex，并能创建新的 task/thread
-- 项目使用根目录 `AGENTS.md` 记录仓库约束；不需要 `CLAUDE.md`
+## 安装
 
-## 1. 从 GitHub 安装
+需要 Node.js 18 或更高版本。直接从 GitHub 全局安装：
 
 ```powershell
 npm install -g https://github.com/Loe1210/Hins-flow.git
-```
-
-安装 CLI 后运行一次 `hins-flow install`，把 `hins-flow` 和随包携带的 Matt skills 复制到 Codex 的全局目录。安装完成后，新开一个终端，再检查 CLI：
-
-```powershell
-hins-flow --version
-hins-flow --help
-```
-
-## 2. 安装 skills 和检查结果
-
-运行：
-
-```powershell
 hins-flow install
 hins-flow doctor
 ```
 
-默认目录：
+安装完成后，新建一个 Codex task，让 Codex 重新加载 skills。
 
-```text
-Windows: %USERPROFILE%\.agents\skills
-macOS/Linux: ~/.agents/skills
-```
-
-如果升级后需要强制刷新已经存在的 skills：
-
-```powershell
-hins-flow install --force
-hins-flow doctor
-```
-
-如果 PowerShell 的脚本执行策略阻止 `.ps1`，使用 Windows shim：
+如果 PowerShell 的脚本执行策略阻止 `.ps1`，请改用：
 
 ```powershell
 hins-flow.cmd install
 hins-flow.cmd doctor
 ```
 
-也可以安装到临时目录进行测试：
+## 使用教程
 
-```powershell
-hins-flow install --target C:\temp\hins-flow-skills
-hins-flow doctor --target C:\temp\hins-flow-skills
-```
+在 Codex 中打开要处理的项目，然后每次都从 `/hins-flow` 开始。
 
-安装或更新完成后，关闭当前 Codex task/thread，并新建一个 task/thread，让 Codex 重新加载 skills。
-
-## 3. 首次项目配置
-
-进入要开发的项目根目录，确认存在 `AGENTS.md`。直接在 Codex 中进入流程：
+直接描述你想要的结果即可，即使需求还很模糊：
 
 ```text
-/hins-flow
+/hins-flow 我想让分片上传更稳定
 ```
 
-`/hins-flow` 会自动检查 skills、项目 profile、Matt setup 文档和现有门禁状态。第一次运行 Standard、Large 或 High-risk flow 时，如果以下文件不存在，它会自动进入 setup 流程并只在必要处请求你的选择：
+当然，提供目标、使用场景、限制和验收标准会让结果更贴近你的预期：
 
 ```text
-docs/agents/issue-tracker.md
-docs/agents/domain.md
+/hins-flow 强化分片上传：弱网断线后能够续传，重复分片不能产生脏数据，保持现有 API 兼容，并补充集成测试
 ```
 
-按提示选择 issue tracker、triage labels 和 domain docs 布局。这个配置是每个项目一次，不是每次 `/hins-flow` 都重复配置。
-
-建议在项目的 `AGENTS.md` 中写清楚：
-
-- 包管理器、安装命令和测试命令
-- lint、typecheck、build、format 命令
-- 支持的运行时和目标平台
-- 数据库、迁移、生成文件和部署约束
-- 哪些操作必须先获得用户确认
-
-## 4. `/hins-flow` 全流程
-
-标准调用顺序（Codex 也可能显示为 `$hins-flow`）：
+Hins-flow 会自动判断项目类型和当前进度，不要求你手动选择阶段。它会依次完成：
 
 ```text
-$hins-flow plan <slug> "<title>"
-$hins-flow review-plan <NNNN>
-$hins-flow dev <NNNN>
-$hins-flow review-dev <NNNN>
-$hins-flow finish <NNNN>
+项目探测与任务分级
+→ 需求澄清与领域建模
+→ 规格和验收标准
+→ 大型任务拆票
+→ Gate A 计划确认
+→ 隔离实现与 TDD
+→ 双轴代码审查
+→ Gate B 成果确认
+→ 收尾
 ```
 
-推荐示例：
+流程暂停时会明确说明：
+
+- 已经完成了什么；
+- 发现了什么风险或待确认项；
+- 下一步将要做什么；
+- 你下一句应该输入什么。
+
+通常只需要继续输入：
 
 ```text
-$hins-flow plan upload-hardening "强化分片上传"
-$hins-flow review-plan 0001
-$hins-flow dev 0001
-$hins-flow review-dev 0001
-$hins-flow finish 0001
+/hins-flow 继续
 ```
 
-完整门禁顺序：
+如果存在多个进行中的任务，Hins-flow 会请你选择一个；如果需要产品取舍、Gate 确认或危险操作授权，它会给出具体选项，不会让你猜下一步命令。
+
+## 它会自动做什么
+
+- 读取仓库的 `AGENTS.md`、文档、manifest、lockfile、CI 和测试脚本；
+- 探测语言、包管理器、产品形态、目标平台和环境限制；
+- 把模糊想法整理成问题定义、方案、用户故事、实现决策、测试决策和非目标；
+- 对大型工作建立可追踪的垂直任务；
+- 使用项目原生工具链实施，并通过 TDD 留下 red/green 证据；
+- 分别按仓库规范和需求规格审查改动；
+- 记录验证命令、结果、平台缺口、Gate 状态以及最终处置。
+
+内部强制流程保持为：
 
 ```text
 $setup-matt-pocock-skills
@@ -122,151 +92,34 @@ $setup-matt-pocock-skills
 → finish
 ```
 
-### 4.1 `plan`：探测、分类和规格
+这些 Matt skills 已随 Hins-flow 一起安装，使用者不需要单独下载或逐个调用。
 
-```text
-$hins-flow plan upload-hardening "强化分片上传"
-```
+## AGENTS.md
 
-此阶段会：
+Codex 使用 `AGENTS.md` 了解项目约束，不需要 `CLAUDE.md`。如果仓库已有 `AGENTS.md`，Hins-flow 会自动读取；如果没有，它仍可先探测项目，并在确实需要补充长期约束时给出建议。
 
-1. 使用 `project-probe.py` 只读探测仓库。
-2. 根据 manifests、lockfiles、脚本和目录结构识别语言、生态、产品 surface、目标平台和风险。
-3. 读取 `profile-selection.md` 路由到 Go、Node/TypeScript、Python、Rust、JVM、Android、.NET、Swift、C/C++、PHP、Ruby、Elixir、Dart/Flutter 或 generic fallback profile。
-4. 读取受影响的 ecosystem references、surface profile 和 verification contract。
-5. 确保 Matt setup 已完成。
-6. 运行 `$grill-with-docs`，用 `$domain-modeling` 形成领域决策、ADR 和 glossary。
-7. 运行 `$to-spec`，生成 Problem、Solution、User Stories、Implementation Decisions、Testing Decisions 和 Out of Scope。
-8. Large 任务运行 `$to-tickets`，拆成有 blocking edges 的 vertical tracer-bullet tickets。
-9. 建立验证矩阵，并将 Matt 证据和验证证据写入 change note。
+适合写入 `AGENTS.md` 的内容包括：
 
-`plan` 只做计划和证据收集，不实现代码，完成后停止等待计划评审。
+- 安装、测试、lint、typecheck、build 和 format 命令；
+- 支持的运行时、操作系统和目标平台；
+- 数据库、迁移、生成文件和部署限制；
+- 必须先获得用户确认的操作。
 
-### 4.2 `review-plan`：Gate A
+## 支持范围
 
-```text
-$hins-flow review-plan 0001
-```
+语言和生态：Go、Node.js、TypeScript、JavaScript、Python、Rust、JVM、Kotlin、Android、.NET、Swift、C/C++、PHP、Ruby、Elixir、Dart/Flutter，以及无法识别技术栈时的 generic fallback。
 
-Gate A 必须确认：
+产品形态：Web、PWA、浏览器扩展、后端、API、服务、serverless、edge、移动端、桌面端、CLI、库、SDK、插件、嵌入式、IoT、游戏、数据、ML 和基础设施。
 
-- profile、平台和产品 surface 假设正确
-- spec 和 user stories 完整
-- Large 任务 ticket breakdown 已批准
-- 测试 seam 和 verification contract 明确
-- Matt gates 已完成
-- `flow_verification` 已完成
+Hins-flow 会保留并执行 `verification-contract.md`、跨平台环境限制、worktree、Matt gate、`flow_verification`、Gate A、Gate B、合并和清理规则。
 
-Gate A 未通过时不能进入 `dev`。计划评审阶段不实现代码、不创建合并提交。
+## 安全边界
 
-### 4.3 `dev`：隔离实现和 TDD
+Hins-flow 不会自动部署、push、合并、丢弃改动或删除用户数据。Gate A、Gate B、外部状态变更、PR、部署以及 branch/worktree 删除都需要明确授权。
 
-```text
-$hins-flow dev 0001
-```
+输入 `/hins-flow 继续` 可以确认进入流程中的普通下一阶段，但不会被解释为授权 push、部署、合并、丢弃改动或删除数据；这些动作会单独询问。
 
-此阶段会：
-
-1. 检查 Gate A。
-2. 从记录的 base branch 创建或恢复隔离 worktree。
-3. 使用仓库原生工具链实现，不猜测陌生技术栈命令。
-4. 按已确认 seam 使用 `$tdd`，遵循 red → green → refactor 的测试驱动循环。
-5. 使用 `$implement` 完成垂直切片。
-6. 记录测试、类型检查、构建、平台限制和跨平台验证结果。
-7. 提交实现并停止，等待开发评审。
-
-### 4.4 `review-dev`：双轴 code review 和 Gate B
-
-```text
-$hins-flow review-dev 0001
-```
-
-此阶段使用 `$code-review` 分别执行：
-
-- Standards：仓库规范和 Fowler smell baseline
-- Spec：需求、规格和验收标准
-
-Critical/Important finding 最多修复三轮。随后完成 review record、标记 `$tdd` 和 review gates，并停在 Gate B。
-
-### 4.5 `finish`：只执行明确授权的收尾动作
-
-```text
-$hins-flow finish 0001
-```
-
-`finish` 会重新运行 profile/platform verification，并要求用户明确选择：
-
-- 合并到 base branch
-- 创建或更新 PR
-- 保留 branch/worktree
-- 丢弃变更
-
-删除 branch 或 worktree 会单独询问。未明确授权时不会执行合并、push、部署、丢弃或删除。
-
-## 5. 状态和验证工具
-
-Universal Flow 的脚本位于安装后的 `hins-flow` skill 目录：
-
-```text
-%USERPROFILE%\.agents\skills\hins-flow\scripts\flowctl.py
-%USERPROFILE%\.agents\skills\hins-flow\scripts\project-probe.py
-```
-
-只读探测：
-
-```powershell
-python "$env:USERPROFILE\.agents\skills\hins-flow\scripts\project-probe.py" --repo .
-```
-
-状态工具帮助：
-
-```powershell
-python "$env:USERPROFILE\.agents\skills\hins-flow\scripts\flowctl.py" --help
-```
-
-`flowctl.py` 负责 change note、状态迁移、Matt gate、`flow_verification` 和阶段 preflight。状态工具不会替代用户确认，也不会自动执行部署或数据删除。
-
-## 6. 支持范围
-
-语言和生态：
-
-- Go
-- Node.js / TypeScript / JavaScript
-- Python
-- Rust
-- JVM / Kotlin
-- Android
-- .NET
-- Swift / Apple
-- C / C++ / native
-- PHP
-- Ruby
-- Elixir
-- Dart / Flutter
-- generic fallback
-
-产品 surface：
-
-- Web、PWA、浏览器扩展
-- 后端、API、服务、serverless、edge
-- 移动端
-- 桌面端
-- CLI
-- 库、SDK、插件
-- 嵌入式、IoT、游戏
-- 数据、ML、基础设施
-
-Universal Flow 会保留并使用 `verification-contract.md`、跨平台限制、worktree、Gate A、Gate B、合并和清理规则。
-
-## 7. 随包安装的 Matt Pocock Skills
-
-以下稳定 skills 均来自 `mattpocock/skills`：
-
-`ask-matt`、`codebase-design`、`code-review`、`diagnosing-bugs`、`domain-modeling`、`grilling`、`grill-me`、`grill-with-docs`、`handoff`、`implement`、`improve-codebase-architecture`、`prototype`、`research`、`resolving-merge-conflicts`、`setup-matt-pocock-skills`、`tdd`、`teach`、`to-spec`、`to-tickets`、`triage`、`wayfinder`、`writing-great-skills`。
-
-不会安装 `skills/in-progress`、Vercel 或其他来源的 skills。
-
-## 8. 从 GitHub 升级
+## 更新
 
 ```powershell
 npm install -g https://github.com/Loe1210/Hins-flow.git
@@ -274,12 +127,14 @@ hins-flow install --force
 hins-flow doctor
 ```
 
-升级后重新创建 Codex task/thread。
+更新后新建一个 Codex task，使新版本生效。
 
-## 9. 安全边界
+## 随包安装的 Matt Pocock Skills
 
-`$hins-flow` 不会自动部署、push、合并或删除用户数据。它不会绕过 Gate A、Gate B、Matt gate 或 `flow_verification`。所有外部状态变化、合并、PR、部署、branch/worktree 删除都需要用户明确授权。
+稳定套件包括：`ask-matt`、`codebase-design`、`code-review`、`diagnosing-bugs`、`domain-modeling`、`grilling`、`grill-me`、`grill-with-docs`、`handoff`、`implement`、`improve-codebase-architecture`、`prototype`、`research`、`resolving-merge-conflicts`、`setup-matt-pocock-skills`、`tdd`、`teach`、`to-spec`、`to-tickets`、`triage`、`wayfinder` 和 `writing-great-skills`。
 
-## 10. 许可证和归属
+不会安装 `skills/in-progress`、Vercel 或其他来源的 skills。
 
-本项目以 MIT 许可证发布。随包分发的 Matt Pocock Skills 来源为公开仓库 [mattpocock/skills](https://github.com/mattpocock/skills)，其作者和许可证归属保持不变。本项目作者为 Loe1210。
+## 许可证和归属
+
+Hins-flow 使用 MIT 许可证。随包分发的 Matt Pocock Skills 来源于公开仓库 [mattpocock/skills](https://github.com/mattpocock/skills)，其作者与许可证归属保持不变。本项目维护者为 [Loe1210](https://github.com/Loe1210)。

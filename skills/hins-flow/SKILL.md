@@ -1,89 +1,143 @@
 ---
 name: hins-flow
-description: Run a universal gated development workflow for any language, package manager, application surface, and target platform. Use when the user invokes $hins-flow or /hins-flow with plan, review-plan, dev, review-dev, or finish for frontend, backend, mobile, desktop, CLI, library, data, or infrastructure work.
+description: Turn a rough software request into a verified, stable result through a universal gated workflow for any language, package manager, product surface, or target platform. Use whenever the user invokes /hins-flow or $hins-flow, including vague requests, requests to continue, or requests to plan, implement, review, or finish frontend, backend, mobile, desktop, CLI, library, data, ML, embedded, game, plugin, SDK, or infrastructure work.
 ---
 
-# Flow Universal
+# Hins Flow
 
-Use one language- and platform-neutral lifecycle:
+Use one entry point and route the work automatically:
 
 ```text
-probe -> classify -> Matt discovery/spec -> plan review -> Gate A
-      -> isolated implementation/TDD -> two-axis review -> Gate B -> finish
+/hins-flow <rough request>
+/hins-flow continue
 ```
 
-When the user enters `/hins-flow` (or `$hins-flow` in Codex surfaces that use
-dollar-prefixed skill invocation), run the entry preflight automatically. Do
-not require the user to memorize a separate setup command before the first
-flow.
+Do not require the user to know or choose `plan`, `review-plan`, `dev`,
+`review-dev`, or `finish`. Treat those as internal stages. Accept an incomplete
+idea, inspect the repository, sharpen the intended outcome, and guide the user
+through each required decision until a verified result is ready.
 
-## Before acting
+## Start every invocation
 
-1. Check that the bundled Matt skills and this skill are present in the user's
-   global skills directory. If they are missing, run `hins-flow install`
-   without `--force`, then continue with the preflight.
+1. Read repository instructions, `CONTEXT.md`, ADRs, CI files, manifests,
+   lockfiles, and existing test scripts.
 2. Read [workflow.md](references/workflow.md),
    [profile-selection.md](references/profile-selection.md),
    [surface-profiles.md](references/surface-profiles.md), and
    [verification-contract.md](references/verification-contract.md).
-3. After probing, read every ecosystem reference routed by
-   `profile-selection.md` for affected packages. In a polyglot repository, load
-   more than one; for an unknown language, load the generic fallback.
-4. For review stages, also read [review-prompts.md](references/review-prompts.md).
-5. Read repository instructions, `CONTEXT.md`, ADRs, CI files, manifests,
-   lockfiles, and existing test scripts.
-6. Before the first non-Light flow, check that Matt setup files exist. If
-   `docs/agents/issue-tracker.md` or `docs/agents/domain.md` is missing, invoke
-   `$setup-matt-pocock-skills` automatically and pause only for its required
-   user choices; resume the flow after setup is complete.
-7. Run the read-only project probe before proposing verification:
+3. Run the read-only project probe:
 
    ```text
    python <skill-dir>/scripts/project-probe.py
    ```
 
-   Treat probe output as evidence to confirm, not as permission to guess.
+4. Read every ecosystem reference selected by the probe. Load multiple
+   references for a polyglot repository and the generic fallback for an unknown
+   stack. For review stages, also read
+   [review-prompts.md](references/review-prompts.md).
+5. Inspect change notes and their gate evidence with:
 
-Use the bundled state tool for note allocation, explicit Matt evidence, and
-preflight checks:
+   ```text
+   python <skill-dir>/scripts/flowctl.py <command> ...
+   ```
+
+6. Check that the bundled Matt skills are available. If not, run
+   `hins-flow install` without `--force`, explain that Codex may need a new task
+   to reload them, and continue as far as the current environment allows.
+7. Before a non-Light flow, check the Matt setup documents. If
+   `docs/agents/issue-tracker.md` or `docs/agents/domain.md` is absent, invoke
+   `$setup-matt-pocock-skills` and pause only for choices that cannot be inferred
+   safely.
+
+If `python` is unavailable on `PATH`, use the runtime exposed by the Codex
+workspace dependency loader. The bundled scripts use only the Python standard
+library.
+
+## Route automatically
+
+Interpret `/hins-flow <request>` as both the invocation and the desired
+outcome. Generate a concise slug and title when none are supplied. Ask only
+high-value questions whose answers materially change the implementation or its
+safety; otherwise state reasonable assumptions and proceed.
+
+Interpret `/hins-flow 继续`, `/hins-flow continue`, or an equivalent short
+reply as a request to resume the active flow. If exactly one change note is
+active, select it automatically. If several are active, show a short choice.
+
+Choose the internal stage from repository evidence and change-note state:
+
+- No matching active note: probe, classify, discover, specify, and plan.
+- `draft`: resume discovery/specification and complete the plan.
+- `plan-review`: review the plan and present Gate A. A later explicit
+  `/hins-flow 继续` authorizes entry into development if Gate A has no blocking
+  findings.
+- `approved`: create or resume the isolated implementation and run TDD.
+- `in-dev`: resume the next incomplete implementation slice.
+- `dev-review`: run the independent Standards and Spec reviews, resolve
+  Critical/Important findings, and present Gate B.
+- `ready-to-merge`: rerun required verification and ask the user to choose the
+  finish action.
+- `blocked`: explain the blocker and the smallest decision or external change
+  needed to resume.
+- `done` or `abandoned`: summarize the completed record; start a new note only
+  for a new requested outcome.
+
+Never infer push, deployment, merge, discard, branch deletion, worktree
+deletion, or data deletion from `继续` or `continue`. Ask separately for those
+actions.
+
+## Internal workflow
+
+Maintain this mandatory sequence for Standard, Large, and High-risk work:
 
 ```text
-python <skill-dir>/scripts/flowctl.py <command> ...
+$setup-matt-pocock-skills
+-> $grill-with-docs
+-> $to-spec
+-> Large: $to-tickets
+-> Gate A
+-> $implement + $tdd
+-> $code-review
+-> Gate B
+-> finish
 ```
 
-If `python` is not on `PATH`, use the Python runtime exposed by the Codex
-workspace dependency loader. Both scripts use only the Python standard library.
+- Use `$grill-with-docs` to sharpen a request against the current repository,
+  and `$domain-modeling` for domain terms and decisions. Use `$grill-me` only
+  when there is no codebase.
+- Use `$to-spec` for the problem, solution, stories, decisions, tests, and
+  out-of-scope boundaries.
+- Use `$to-tickets` for Large work and `$handoff` when work crosses sessions.
+- Use `$implement` with `$tdd` at agreed public seams and record red/green
+  evidence.
+- Use `$code-review` for independent Standards and Spec axes.
+- Mark every Matt gate and `flow_verification` through `flowctl.py`; do not
+  advance while required evidence is incomplete.
 
-## Dispatch
+## Interaction contract
 
-- `plan <slug> [title]`: probe the repository, classify its language/ecosystem,
-  surface, target platform, risk, and verification matrix; run mandatory Matt
-  discovery and spec synthesis; add Large-work tickets; commit the plan; stop.
-- `review-plan NNNN`: independently review the complete universal plan,
-  including its detected profile and platform assumptions; approve only when all
-  blocking findings and workflow evidence are complete; stop for Gate A.
-- `dev NNNN`: require Gate A, create or resume an isolated worktree, use the
-  repository's native implementation toolchain and `$tdd` at agreed seams,
-  record cross-platform verification, commit, and stop.
-- `review-dev NNNN`: invoke `$code-review` for independent Standards and Spec
-  axes against `base...HEAD`, fix Critical/Important findings for at most three
-  rounds, commit the review record, and stop for Gate B.
-- `finish NNNN`: rerun the profile/platform verification and execute only the
-  user's explicit merge, PR, keep, or discard choice. Ask separately before
-  deleting branches or worktrees.
+At every pause, tell the user:
+
+1. what completed;
+2. what remains uncertain or blocked;
+3. what the next stage will do;
+4. the exact next invocation, normally `/hins-flow 继续`.
+
+Offer concrete options for product decisions and finish actions. Do not expose
+internal stage commands unless the user asks for diagnostic or manual control.
 
 ## Universal rules
 
-- Mandatory Matt gates are `$grill-with-docs` -> `$to-spec` ->
-  Large: `$to-tickets` -> `$tdd` -> `$code-review`; use `$handoff` across
-  Large-work sessions.
-- Do not invent commands for an unfamiliar stack. Use repository-native scripts,
-  CI commands, documented wrappers, or an explicitly approved fallback.
-- Do not run a platform-specific build on an unavailable platform and call it
-  passed. Record the environment gap and keep the gate closed unless the user
-  accepts it.
-- Do not implement during plan or plan review; do not merge during dev or review.
-- Do not push, deploy, discard work, or delete user data without explicit
-  authorization.
-- Light work may bypass the flow only when the exemption and verification are
-  stated.
+- Use repository-native scripts, CI commands, documented wrappers, or an
+  explicitly approved fallback. Never invent commands for an unfamiliar stack.
+- Do not treat a platform-specific build as passed on an unavailable platform.
+  Record the environment gap and keep the gate closed unless the user accepts
+  it explicitly.
+- Do not implement during planning or plan review; do not merge during
+  development or review.
+- Use an isolated worktree for implementation and preserve unrelated user
+  changes.
+- Light work may bypass the full flow only when the exemption and verification
+  are stated.
+- Do not push, deploy, merge, discard work, delete branches or worktrees, or
+  delete user data without explicit authorization.
