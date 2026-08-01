@@ -2,6 +2,9 @@
 
 Apply this workflow to any repository, language, product surface, or target
 platform. A profile changes the verification commands, not the safety gates.
+Apply `language-policy.md` throughout: user-facing messages and artifacts use
+Simplified Chinese by default, while machine-readable keys, fixed state values,
+commands, identifiers, paths, and raw logs remain unchanged.
 
 ## Classification
 
@@ -58,7 +61,8 @@ manually. Use English YAML frontmatter for tooling and any language in prose.
    ```
 
 4. Run `$grill-with-docs`, then `$to-spec`; record decisions and mark
-   `matt_grilling` and `matt_spec` `done`.
+   `matt_grilling` and `matt_spec` `done`. Require Simplified Chinese from both
+   skills and normalize their output before writing it to the note.
 5. For Large work, run `$to-tickets`, obtain approval for the breakdown, and
    mark `matt_tickets` `done`; mark it `not-required` for Standard work.
 6. Fill the note with:
@@ -67,6 +71,8 @@ manually. Use English YAML frontmatter for tooling and any language in prose.
    - contracts, domain ownership, data/compatibility/rollback behavior;
    - public test seams and acceptance criteria;
    - baseline, focused, full, integration, packaging, and platform commands.
+   Write all headings, explanations, decisions, criteria, and review records in
+   Simplified Chinese; preserve commands and controlled metadata values.
 7. Resolve every placeholder command using repository-native evidence. Mark
    `flow_verification` `done` only after every affected package/target row in
    `verification-contract.md` is reproducible or an explicitly accepted
@@ -79,6 +85,7 @@ Do not implement product code in this stage.
 
 Run the universal plan reviewer read-only. It must check profile selection,
 platform assumptions, test seams, tickets, rollback, and verification commands.
+Its report and the Gate A summary must be in Simplified Chinese.
 Fix findings in the parent agent and rerun a fresh reviewer, at most three
 unsuccessful rounds. On approval, commit, report Gate A, and stop.
 
@@ -110,6 +117,7 @@ Development requires explicit user confirmation or an explicit waiver of Gate A.
 1. Run `preflight NNNN review-dev` and capture `git diff base...HEAD` once.
 2. Invoke `$code-review` for parallel Standards and Spec axes; use the bundled
    prompts only if the named skill cannot be loaded, and record that fallback.
+   Require both reports to use Simplified Chinese.
 3. Preserve the axes separately. Fix every Critical and Important finding,
    rerun required verification and both reviewers, and stop after three failed
    rounds.
@@ -124,6 +132,9 @@ Rerun all required verification before asking the user to choose:
 2. push and create a PR;
 3. keep branch/worktree;
 4. discard.
+
+Present the choices, verification summary, consequences, and final record in
+Simplified Chinese. Preserve Git refs, commands, status values, and raw output.
 
 For local merge, resolve base advancement in the feature worktree, verify there,
 return to a clean base checkout, merge without rewriting history, verify the

@@ -1,4 +1,4 @@
 interface:
   display_name: "Hins Flow"
-  short_description: "Turns rough requests into verified, stable results"
-  default_prompt: "Use $hins-flow to turn this rough request into a verified, stable result."
+  short_description: "将模糊需求转化为经过规格、测试和审查验证的稳定中文成果"
+  default_prompt: "使用 $hins-flow 把这个需求转化为经过验证的稳定成果，并让所有用户可见内容使用简体中文。"

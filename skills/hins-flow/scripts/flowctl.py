@@ -234,94 +234,87 @@ flow_verification: "pending"
 
 # {note_id} · {title}
 
-## 1. Problem and outcome
+## 1. 问题与预期成果
 
-Describe the user-facing problem and the observable outcome.
+描述用户面对的问题，以及完成后可以观察和验证的成果。
 
-## 2. Decisions, assumptions, and questions
+## 2. 决策、假设与待确认问题
 
-- Record settled decisions.
-- Make assumptions explicit.
-- Leave no material product decision for the implementation stage.
+- 记录已经确定的决策。
+- 明确写出所有假设。
+- 不要把重要的产品决策留到实施阶段。
 
-### Matt discovery record
+### Matt 需求探索记录
 
-- `grill-with-docs`: pending
-- `to-spec`: pending
-- `to-tickets`: pending / not-required
-- `CONTEXT.md` and ADR/domain decisions considered: pending
+- `grill-with-docs`：待完成
+- `to-spec`：待完成
+- `to-tickets`：待完成 / 不需要
+- 已检查 `CONTEXT.md` 和 ADR/领域决策：待完成
 
-## 3. In scope
+## 3. 范围内
 
-- List the required behavior and affected capabilities.
+- 列出必须实现的行为和受影响的能力。
 
-## 4. Out of scope
+## 4. 范围外
 
-- State what must not change.
+- 明确哪些内容不得改变。
 
-## 5. Domain and architecture
+## 5. 领域与架构
 
-Describe ownership, contracts, data flow, compatibility, failure behavior, and
-relevant CONTEXT/ADR decisions.
+描述职责归属、契约、数据流、兼容性、失败行为，以及相关的 CONTEXT/ADR 决策。
 
-## 6. Environment and verification profile
+## 6. 环境与验证配置
 
-Record detected ecosystems, package managers, affected packages, product
-surfaces, target operating systems, runtimes/SDKs, and the repository-native
-baseline, focused, integration, packaging, and release checks. Do not leave
-placeholder commands here.
+记录检测到的生态、包管理器、受影响包、产品形态、目标操作系统、运行时/SDK，
+以及仓库原生的基线、聚焦、集成、打包和发布检查。这里不得保留占位命令。
 
-| Package/target | Host/target OS | Baseline | Focused red/green | Full test | Static checks | Build/package | Integration/smoke |
+| 包/目标 | 主机/目标系统 | 基线 | 聚焦 red/green | 完整测试 | 静态检查 | 构建/打包 | 集成/冒烟 |
 |---|---|---|---|---|---|---|---|
 
-Follow the universal verification contract. Record exact working directories,
-toolchain versions, dependencies, expected signals, and environment limitations.
+遵循 Universal Flow 验证契约。记录准确的工作目录、工具链版本、依赖、预期信号
+和环境限制。
 
-## 7. Test seams and acceptance criteria
+## 7. 测试 seam 与验收标准
 
-Name the agreed public seams, then list objectively verifiable criteria.
+列出已经确认的公共 seam，然后给出可以客观验证的标准。
 
-## 8. Verification
+## 8. 验证
 
-Default required commands:
+默认要求的命令：
 
 {commands}
 
-Replace the generic command above with the resolved repository commands. Add
-focused, integration, contract, smoke, packaging, platform, or migration
-checks here.
+用已经确认的仓库命令替换上面的通用命令，并在这里补充聚焦、集成、契约、
+冒烟、打包、平台或迁移检查。
 
-## 9. Tracer-bullet tickets
+## 9. 垂直 tracer-bullet 任务
 
-For Large work, link one-file-per-ticket artifacts under
-`dev/changes/{note_id}-{slug}/tickets/`, including blocking edges. Otherwise
-write `Not required`.
+对于 Large 任务，在 `dev/changes/{note_id}-{slug}/tickets/` 下链接每个任务一个
+文件的产物，并包含 blocking edge。否则写明“不需要”。
 
-## 10. Matt workflow checklist
+## 10. Matt 流程检查清单
 
-- [ ] `grill-with-docs` completed and its decisions recorded.
-- [ ] `to-spec` synthesized the approved problem, solution, seams, tests, and
-  out-of-scope boundary.
-- [ ] `to-tickets` completed for Large work, or marked not-required.
-- [ ] `$tdd` red-green evidence recorded during development.
-- [ ] `$code-review` Standards and Spec axes completed.
+- [ ] 已完成 `grill-with-docs` 并记录其决策。
+- [ ] `to-spec` 已整理获批的问题、方案、seam、测试和范围外边界。
+- [ ] Large 任务已完成 `to-tickets`，或已标记为 `not-required`。
+- [ ] 已在开发过程中记录 `$tdd` 的 red-green 证据。
+- [ ] 已完成 `$code-review` 的 Standards 与 Spec 两个审查轴。
 
-## 11. Plan review record
+## 11. 计划审查记录
 
-Append each verdict, blocking finding, and response.
+追加记录每次结论、阻塞问题及其处理结果。
 
-## 12. Development and verification record
+## 12. 开发与验证记录
 
-Append implementation decisions, deviations, commits, commands, and exact
-results.
+追加记录实施决策、偏差、提交、命令和准确结果。
 
-## 13. Standards and Spec review record
+## 13. Standards 与 Spec 审查记录
 
-Keep the two review axes separate and record resolution of every blocking item.
+保持两个审查轴彼此独立，并记录每个阻塞问题的解决情况。
 
-## 14. Finish record
+## 14. 收尾记录
 
-Record Gate B choice, merge or PR result, final verification, and cleanup.
+记录 Gate B 选择、merge 或 PR 结果、最终验证和清理情况。
 """
 
 

@@ -19,32 +19,37 @@ through each required decision until a verified result is ready.
 
 ## Start every invocation
 
-1. Read repository instructions, `CONTEXT.md`, ADRs, CI files, manifests,
+1. Read and enforce [language-policy.md](references/language-policy.md). Default
+   every user-facing message and artifact to Simplified Chinese, including
+   plans, specs, questions, Gate reports, reviews, handoffs, and finish records.
+   Keep machine keys, controlled values, commands, code identifiers, paths, and
+   raw logs unchanged, then explain their meaning in Chinese.
+2. Read repository instructions, `CONTEXT.md`, ADRs, CI files, manifests,
    lockfiles, and existing test scripts.
-2. Read [workflow.md](references/workflow.md),
+3. Read [workflow.md](references/workflow.md),
    [profile-selection.md](references/profile-selection.md),
    [surface-profiles.md](references/surface-profiles.md), and
    [verification-contract.md](references/verification-contract.md).
-3. Run the read-only project probe:
+4. Run the read-only project probe:
 
    ```text
    python <skill-dir>/scripts/project-probe.py
    ```
 
-4. Read every ecosystem reference selected by the probe. Load multiple
+5. Read every ecosystem reference selected by the probe. Load multiple
    references for a polyglot repository and the generic fallback for an unknown
    stack. For review stages, also read
    [review-prompts.md](references/review-prompts.md).
-5. Inspect change notes and their gate evidence with:
+6. Inspect change notes and their gate evidence with:
 
    ```text
    python <skill-dir>/scripts/flowctl.py <command> ...
    ```
 
-6. Check that the bundled Matt skills are available. If not, run
+7. Check that the bundled Matt skills are available. If not, run
    `hins-flow install` without `--force`, explain that Codex may need a new task
    to reload them, and continue as far as the current environment allows.
-7. Before a non-Light flow, check the Matt setup documents. If
+8. Before a non-Light flow, check the Matt setup documents. If
    `docs/agents/issue-tracker.md` or `docs/agents/domain.md` is absent, invoke
    `$setup-matt-pocock-skills` and pause only for choices that cannot be inferred
    safely.
@@ -111,6 +116,9 @@ $setup-matt-pocock-skills
 - Use `$implement` with `$tdd` at agreed public seams and record red/green
   evidence.
 - Use `$code-review` for independent Standards and Spec axes.
+- Pass the Simplified-Chinese output requirement into every Matt skill and
+  reviewer invocation. Translate and normalize any English result before it is
+  shown to the user or written to a user-facing artifact.
 - Mark every Matt gate and `flow_verification` through `flowctl.py`; do not
   advance while required evidence is incomplete.
 
@@ -125,6 +133,9 @@ At every pause, tell the user:
 
 Offer concrete options for product decisions and finish actions. Do not expose
 internal stage commands unless the user asks for diagnostic or manual control.
+Write this communication in Simplified Chinese. Use Chinese commit messages and
+Chinese prose in documents created by the flow unless the user explicitly asks
+for another language. Preserve technical identifiers in their original form.
 
 ## Universal rules
 
