@@ -6,21 +6,24 @@ Hins-flow 是一套面向 Codex 的稳定开发流程。你只需要从一个模
 
 ## 安装
 
-需要 Node.js 18 或更高版本。直接从 GitHub 全局安装：
+需要 Node.js 18 或更高版本。复制执行这一条命令，即可直接从 GitHub 把 Hins-flow 和全部 Matt skills 安装到 Codex 的全局 skills 目录：
+
+```powershell
+npx --yes --package=https://github.com/Loe1210/Hins-flow.git hins-flow install --force
+```
+
+这条命令不要求预先安装 `hins-flow.cmd`，也不依赖 npm 全局命令目录已经加入 `PATH`。安装器会复制并检查全部 23 个 skills。看到下面的结果即表示安装完整：
+
+```text
+Hins-flow installation is healthy: 23 skills
+```
+
+安装完成后，完全退出并重新打开 Codex，再新建一个 task，让 Codex 重新加载 skills。
+
+如果希望把 `hins-flow` CLI 本身也长期安装为全局命令，可以选择执行：
 
 ```powershell
 npm install -g https://github.com/Loe1210/Hins-flow.git
-hins-flow install
-hins-flow doctor
-```
-
-安装完成后，新建一个 Codex task，让 Codex 重新加载 skills。
-
-如果 PowerShell 的脚本执行策略阻止 `.ps1`，请改用：
-
-```powershell
-hins-flow.cmd install
-hins-flow.cmd doctor
 ```
 
 ## 使用教程
@@ -128,12 +131,10 @@ Hins-flow 不会自动部署、push、合并、丢弃改动或删除用户数据
 ## 更新
 
 ```powershell
-npm install -g https://github.com/Loe1210/Hins-flow.git
-hins-flow install --force
-hins-flow doctor
+npx --yes --package=https://github.com/Loe1210/Hins-flow.git hins-flow install --force
 ```
 
-更新后新建一个 Codex task，使新版本生效。
+同一条命令也用于更新。更新后完全退出并重新打开 Codex，再新建一个 task，使新版本生效。
 
 ## 随包安装的 Matt Pocock Skills
 

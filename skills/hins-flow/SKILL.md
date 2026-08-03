@@ -46,9 +46,16 @@ through each required decision until a verified result is ready.
    python <skill-dir>/scripts/flowctl.py <command> ...
    ```
 
-7. Check that the bundled Matt skills are available. If not, run
-   `hins-flow install` without `--force`, explain that Codex may need a new task
-   to reload them, and continue as far as the current environment allows.
+7. Check that the bundled Matt skills are available. If not, run the one-command
+   GitHub installer below. Do not assume that a persistent `hins-flow` command
+   or npm global `PATH` entry already exists:
+
+   ```text
+   npx --yes --package=https://github.com/Loe1210/Hins-flow.git hins-flow install --force
+   ```
+
+   Explain that Codex must be restarted and a new task created to reload newly
+   installed skills. Continue as far as the current environment allows.
 8. Before a non-Light flow, check the Matt setup documents. If
    `docs/agents/issue-tracker.md` or `docs/agents/domain.md` is absent, invoke
    `$setup-matt-pocock-skills` and pause only for choices that cannot be inferred

@@ -104,6 +104,7 @@ function install(options) {
   if (skipped.length > 0) {
     console.log(`Skipped ${skipped.length} existing files. Re-run with --force to update them.`);
   }
+  doctor(options);
 }
 
 function listSkills() {
