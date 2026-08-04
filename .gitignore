@@ -8,6 +8,7 @@ __pycache__/
 # Local Codex/Matt workflow state
 .scratch/
 .worktrees/
+.hins-flow/backups/
 
 # Editors and operating-system files
 .vscode/

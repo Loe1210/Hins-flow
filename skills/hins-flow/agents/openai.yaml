@@ -1,4 +1,4 @@
 interface:
-  display_name: "Hins Flow"
-  short_description: "将模糊需求转化为经过规格、测试和审查验证的稳定中文成果"
-  default_prompt: "使用 $hins-flow 把这个需求转化为经过验证的稳定成果，并让所有用户可见内容使用简体中文。"
+  display_name: "Hins-flow"
+  short_description: "把模糊的软件需求转化为经过验证、可继续推进的稳定成果"
+  default_prompt: "使用 $hins-flow，把我下面的软件需求转化为经过验证的稳定成果，并在需要我决定时用中文提示下一步。"

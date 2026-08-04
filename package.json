@@ -1,7 +1,7 @@
 {
   "name": "@loe1210/hins-flow",
-  "version": "1.3.0",
-  "description": "Hins-flow universal gated development workflow and bundled Matt Pocock skills for Codex.",
+  "version": "2.0.0",
+  "description": "One adaptive Codex workflow that turns rough software requests into verified, stable results.",
   "author": "Loe1210",
   "license": "MIT",
   "homepage": "https://github.com/Loe1210/Hins-flow",
@@ -17,16 +17,25 @@
   },
   "files": [
     "bin/",
-    "skills/",
+    "lib/",
+    "skills/hins-flow/",
+    "manifests/",
     "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
     "README.md",
     "package.json"
   ],
+  "scripts": {
+    "build:manifests": "node scripts/build-manifests.js package",
+    "test:node": "node --test tests/installer.test.js tests/structure.test.js",
+    "test:python": "python -B -m unittest discover -s tests -p test_*.py",
+    "test": "npm run test:node && npm run test:python"
+  },
   "keywords": [
     "codex",
     "skills",
     "workflow",
-    "matt-pocock",
+    "adaptive-workflow",
     "cli"
   ]
 }

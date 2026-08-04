@@ -1,192 +1,158 @@
 #!/usr/bin/env node
 
-const fs = require("node:fs");
-const os = require("node:os");
+"use strict";
+
 const path = require("node:path");
+const {
+  cleanupLegacy,
+  defaultTarget,
+  doctor,
+  install,
+  listBackups,
+  listCapabilities,
+  rollback,
+} = require("../lib/installer");
 
 const packageRoot = path.resolve(__dirname, "..");
-const bundledSkillsRoot = path.join(packageRoot, "skills");
+
+function packageVersion() {
+  return require(path.join(packageRoot, "package.json")).version;
+}
 
 function printHelp() {
-  console.log(`Hins-flow
+  console.log(`Hins-flow v2
 
-Install the bundled Universal Flow and Matt Pocock skills for Codex.
+从 GitHub 一次安装一个全局 /hins-flow，并在内部提供完整工程能力。
 
-Usage:
-  hins-flow install [--target <dir>] [--force]
+用法：
+  hins-flow install [--target <dir>]
+  hins-flow doctor [--target <dir>] [--no-scripts]
   hins-flow list
   hins-flow path
-  hins-flow doctor [--target <dir>]
-  hins-flow --help
+  hins-flow cleanup-legacy [--target <dir>] [--yes]
+  hins-flow rollback [--target <dir>] [--yes]
   hins-flow --version
 
-Commands:
-  install  Copy bundled skills into the user's global Codex skills directory.
-  list     List the skills bundled in this npm package.
-  path     Print the default global skills directory.
-  doctor   Check an installed skills directory and Flow entry points.
+说明：
+  install         校验安装包，备份旧版后原子安装 hins-flow。
+  doctor          校验安装清单、文件哈希、22 个内部能力和脚本。
+  list            列出 Hins-flow 内部吸收的稳定能力。
+  cleanup-legacy  仅识别与 v1 哈希完全一致的旧独立 skills；--yes 后移动到备份。
+  rollback        查看备份；--yes 后恢复最近一个 Hins-flow 备份。
 
-The default target is <home>/.agents/skills. Existing files are preserved unless
---force is supplied. Codex uses AGENTS.md; CLAUDE.md is not required.
+默认目标目录为 <home>/.agents/skills。安装器只管理 hins-flow 自己登记的文件。
 `);
 }
 
-function packageVersion() {
-  return JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8")).version;
-}
-
-function defaultTarget() {
-  return path.join(os.homedir(), ".agents", "skills");
-}
-
-function parseOptions(args) {
-  const options = { force: false, target: defaultTarget() };
+function parseOptions(args, allowedFlags = new Set()) {
+  const options = { targetRoot: defaultTarget(), apply: false, runScripts: true };
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
-    if (arg === "--force") {
-      options.force = true;
-    } else if (arg === "--target") {
+    if (arg === "--target") {
       const value = args[index + 1];
-      if (!value) throw new Error("--target requires a directory");
-      options.target = path.resolve(value);
+      if (!value) throw new Error("--target 需要目录参数");
+      options.targetRoot = path.resolve(value);
       index += 1;
+    } else if (arg === "--yes" && allowedFlags.has("yes")) {
+      options.apply = true;
+    } else if (arg === "--no-scripts" && allowedFlags.has("no-scripts")) {
+      options.runScripts = false;
+    } else if (arg === "--force" && allowedFlags.has("force")) {
+      // v1 compatibility: v2 install is already an atomic replacement.
     } else {
-      throw new Error(`Unknown option: ${arg}`);
+      throw new Error(`未知参数：${arg}`);
     }
   }
   return options;
 }
 
-function bundledSkillNames() {
-  return fs
-    .readdirSync(bundledSkillsRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
-}
-
-function copyDirectory(source, destination, force, copied, skipped) {
-  for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
-    const sourcePath = path.join(source, entry.name);
-    const destinationPath = path.join(destination, entry.name);
-    if (entry.isDirectory()) {
-      fs.mkdirSync(destinationPath, { recursive: true });
-      copyDirectory(sourcePath, destinationPath, force, copied, skipped);
-      continue;
-    }
-    if (!entry.isFile()) continue;
-    if (path.basename(entry.name) === ".DS_Store" || entry.name.endsWith(".pyc")) continue;
-    if (fs.existsSync(destinationPath) && !force) {
-      skipped.push(path.relative(destination, destinationPath));
-      continue;
-    }
-    fs.mkdirSync(path.dirname(destinationPath), { recursive: true });
-    fs.copyFileSync(sourcePath, destinationPath);
-    copied.push(path.relative(destination, destinationPath));
-  }
-}
-
-function install(options) {
-  const names = bundledSkillNames();
-  fs.mkdirSync(options.target, { recursive: true });
-  const copied = [];
-  const skipped = [];
-  for (const name of names) {
-    copyDirectory(
-      path.join(bundledSkillsRoot, name),
-      path.join(options.target, name),
-      options.force,
-      copied,
-      skipped,
+function printDoctor(result) {
+  if (result.ok) {
+    console.log(
+      `Hins-flow 安装健康：v${result.version}，${result.capabilities} 个内部能力，${result.fileCount} 个受管文件。`,
     );
-  }
-  console.log(`Installed ${copied.length} files from ${names.length} skills into ${options.target}`);
-  if (skipped.length > 0) {
-    console.log(`Skipped ${skipped.length} existing files. Re-run with --force to update them.`);
-  }
-  doctor(options);
-}
-
-function listSkills() {
-  for (const name of bundledSkillNames()) console.log(name);
-}
-
-function readSkillFrontmatter(skillPath) {
-  const skillFile = path.join(skillPath, "SKILL.md");
-  if (!fs.existsSync(skillFile)) return null;
-  const text = fs.readFileSync(skillFile, "utf8");
-  if (!text.startsWith("---\n") && !text.startsWith("---\r\n")) return null;
-  const bodyStart = text.startsWith("---\r\n") ? 5 : 4;
-  const endMatch = text.slice(bodyStart).match(/\r?\n---(?:\r?\n|$)/);
-  if (!endMatch || endMatch.index === undefined) return null;
-  const end = bodyStart + endMatch.index;
-  const frontmatter = text.slice(bodyStart, end);
-  const name = frontmatter.match(/^name:\s*(.+)$/m)?.[1]?.trim();
-  const description = frontmatter.match(/^description:\s*(.+)$/m)?.[1]?.trim();
-  return { name, description };
-}
-
-function doctor(options) {
-  const errors = [];
-  const names = bundledSkillNames();
-  for (const name of names) {
-    const target = path.join(options.target, name);
-    const metadata = readSkillFrontmatter(target);
-    if (!metadata) {
-      errors.push(`${name}: missing or invalid SKILL.md frontmatter`);
-      continue;
-    }
-    if (metadata.name !== name) errors.push(`${name}: frontmatter name is ${metadata.name || "missing"}`);
-    if (!metadata.description) errors.push(`${name}: frontmatter description is missing`);
-  }
-  const flowRoot = path.join(options.target, "hins-flow");
-  for (const relative of ["scripts/flowctl.py", "scripts/project-probe.py", "references/verification-contract.md"]) {
-    if (!fs.existsSync(path.join(flowRoot, relative))) errors.push(`hins-flow: missing ${relative}`);
-  }
-  if (errors.length > 0) {
-    console.error("Hins-flow doctor found problems:");
-    for (const error of errors) console.error(`- ${error}`);
+    console.log(`位置：${result.target}`);
+  } else {
+    console.error("Hins-flow doctor 发现问题：");
+    for (const error of result.errors) console.error(`- ${error}`);
     process.exitCode = 1;
-    return;
   }
-  console.log(`Hins-flow installation is healthy: ${names.length} skills in ${options.target}`);
+  for (const warning of result.warnings) console.warn(`提示：${warning}`);
 }
 
 function main() {
   const [command = "--help", ...args] = process.argv.slice(2);
-  if (command === "--help" || command === "-h" || command === "help") {
+  if (["--help", "-h", "help"].includes(command)) {
     printHelp();
     return;
   }
-  if (command === "--version" || command === "-v") {
+  if (["--version", "-v"].includes(command)) {
     console.log(packageVersion());
     return;
   }
-  if (command === "list") {
-    if (args.length > 0) throw new Error("list does not accept options");
-    listSkills();
-    return;
-  }
   if (command === "path") {
-    if (args.length > 0) throw new Error("path does not accept options");
+    if (args.length) throw new Error("path 不接受参数");
     console.log(defaultTarget());
     return;
   }
+  if (command === "list") {
+    if (args.length) throw new Error("list 不接受参数");
+    for (const capability of listCapabilities(packageRoot)) {
+      console.log(`${capability.name}\t${capability.adapter}`);
+    }
+    return;
+  }
   if (command === "install") {
-    install(parseOptions(args));
+    const options = parseOptions(args, new Set(["force"]));
+    const result = install({ packageRoot, targetRoot: options.targetRoot });
+    console.log(
+      `已安装 Hins-flow v${result.version}：${result.fileCount} 个文件，位置 ${result.target}`,
+    );
+    if (result.backup) console.log(`旧版本备份：${result.backup}`);
+    printDoctor(doctor({ targetRoot: options.targetRoot }));
+    console.log("请重启 Codex 并创建新任务，然后输入 /hins-flow <需求>。");
     return;
   }
   if (command === "doctor") {
-    doctor(parseOptions(args));
+    const options = parseOptions(args, new Set(["no-scripts"]));
+    printDoctor(doctor({ targetRoot: options.targetRoot, runScripts: options.runScripts }));
     return;
   }
-  throw new Error(`Unknown command: ${command}`);
+  if (command === "cleanup-legacy") {
+    const options = parseOptions(args, new Set(["yes"]));
+    const result = cleanupLegacy({
+      packageRoot,
+      targetRoot: options.targetRoot,
+      apply: options.apply,
+    });
+    console.log(`可安全迁移的旧 skills：${result.removable.join(", ") || "无"}`);
+    console.log(`已修改或来源不明、因此保留：${result.preserved.join(", ") || "无"}`);
+    if (!options.apply && result.removable.length) {
+      console.log("当前仅预览。确认后追加 --yes；文件会移动到备份，不会永久删除。");
+    }
+    if (result.backup) console.log(`旧 skills 已移动到：${result.backup}`);
+    return;
+  }
+  if (command === "rollback") {
+    const options = parseOptions(args, new Set(["yes"]));
+    const result = rollback({ targetRoot: options.targetRoot, apply: options.apply });
+    if (!options.apply) {
+      const backups = listBackups(options.targetRoot);
+      console.log(backups.length ? backups.join("\n") : "没有可回滚的 Hins-flow 备份");
+      if (backups.length) console.log("确认恢复最近备份时追加 --yes。");
+    } else {
+      console.log(`已恢复：${result.restored}`);
+      if (result.savedCurrent) console.log(`被替换版本已备份：${result.savedCurrent}`);
+    }
+    return;
+  }
+  throw new Error(`未知命令：${command}`);
 }
 
 try {
   main();
 } catch (error) {
   console.error(`hins-flow: ${error.message}`);
-  console.error("Run `hins-flow --help` for usage.");
+  console.error("运行 `hins-flow --help` 查看用法。");
   process.exitCode = 1;
 }

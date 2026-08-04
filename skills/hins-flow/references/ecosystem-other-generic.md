@@ -31,5 +31,5 @@ plan review, document:
 6. target OS/runtime/device matrix;
 7. repository CI or maintainer evidence for the commands.
 
-Keep `flow_verification` pending until all seven are resolved. This produces the
+Keep `verification_plan` pending until all seven are resolved. This produces the
 same gated outcome even when no built-in ecosystem profile exists.

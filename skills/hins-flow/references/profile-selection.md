@@ -75,4 +75,4 @@ Do not use a root green test to hide a package that was never exercised.
 
 Use `generic` only when no known profile applies. The plan must then identify a
 repository-native test/build command, a public test seam, and a reproducible
-environment before `verification_profile` can be marked `done`.
+environment before `verification_plan` can be marked `passed`.
